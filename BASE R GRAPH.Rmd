@@ -1,0 +1,133 @@
+---
+title: "Base graph"
+author: "Hector Motsepe"
+date: "30/08/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Loading data
+
+```{r}
+rm(list=ls())
+data = read.table('LungCapData.txt', header = TRUE, stringsAsFactors = TRUE)
+attach(data)
+class(Gender)
+
+table(Gender)
+count <- table(Gender)
+```
+
+
+## convert into percentages
+```{r}
+percent <- table(Gender)/ nrow(data)
+
+barplot(count)
+barplot(percent, main='Title', xlab ='Gender', ylab = '%', 
+        las=1, names.arg = c('Female', 'Male'))
+barplot(percent, main='Title', ylab ='Gender', xlab = '%', 
+        las=1, names.arg = c('Female', 'Male'), horiz = TRUE)
+```
+
+# picharts
+```{r}
+pie(count, main = 'Title')
+box()
+
+# boxplots
+boxplot(LungCap)
+
+quantile(LungCap, probs = c(0, 0.25, 0.5, 0.75, 1))
+
+boxplot(LungCap, main='Boxplot', ylab= 'Lung Capacity', ylim=c(0, 17), las=1)
+
+boxplot(LungCap~Gender, main='Boxplot by Gender')
+
+boxplot(LungCap[Gender == 'female'], LungCap[Gender == 'male'])
+```
+
+## Making stratified boxplots
+```{r}
+names(data)
+Age_groups = cut(Age, breaks=c(0, 13, 15, 17, 25), labels = c('>13', '14/15', '16/17', '18+'))
+head(Age_groups)
+head(Age)
+levels(Age_groups)
+boxplot(LungCap~Smoke, ylab='Lung Carpacity',
+        main = 'Boxplot of LungCap (Lung vs Smoke', las=1)
+
+boxplot(LungCap[Age>=18]~Smoke[Age>=18], ylab='Lung Carpacity',
+        main = 'Boxplot of LungCap (Lung vs Smoke', las=1)
+
+boxplot(LungCap~Smoke*Age_groups, ylab='Lung Carpacity',
+        main = 'Boxplot of LungCap (Lung vs Smoke', las=2, col = c(4,2))
+
+legend(x = 5.5, y=4.5, legend = c('Non Smoke', 'Smoke'), col=c(4,2), pch=15, cex=0.9)
+```
+
+## Histogram
+
+```{r}
+hist(LungCap, freq = FALSE, prob=T)
+
+hist(LungCap, prob=TRUE, ylim = c(0, 0.2), breaks = seq(from=0, to=16, by=2),
+     main='Histogram of Lung Caparcity', las = 1)
+
+lines(density(LungCap), col='red', lwd=3)
+
+# MAKING STEM AND leaf plots using R (Appropriate for summarising the distribution of a numeric variable)
+femaleLungCap <- LungCap[Gender == 'female']
+
+stem(femaleLungCap, scale =2)
+```
+
+### STACKED AND GROUPED BAR CHARTS
+
+# Producing a contingecy table
+
+```{r}
+Table1 <- table(Smoke, Gender)
+barplot(Table1, beside=TRUE)
+barplot(Table1, beside=TRUE, legend.text = c('Non Smoker', 'Smoker'), main = ' Gender and Smoking',
+        xlab = 'Gender', las=1, col=c(2, 4))
+```
+
+## mosiac plot
+```{r}
+mosaicplot(Table1)
+```
+## Scatter plot
+# Making scatter plots 
+```{r}
+summary(Height)
+cor(Age, Height) # strong linear association
+plot(Age, Height, main='Scatterplot', las=1, xlim=(c(0, 25)), 
+     cex=0.7, pch=8, col=2)
+#Linear regression
+abline(lm(Height~Age), col=4, lwd=2) # Predict height ussing age
+lines(smooth.spline(Age, Height), lty=2, lwd=5)
+````
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
